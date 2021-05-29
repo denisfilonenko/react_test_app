@@ -7,11 +7,30 @@ const API_KEY = '7992188bc2460cf5f56bf8d34431fd37';
 
 class App extends React.Component {
 
+  state = {
+    temp: undefined,
+    city: undefined,
+    country: undefined,
+    sunrise: undefined,
+    sunset: undefined,
+    error: undefined
+  }
+  
   gettingWeather = async (e) => {
     e.preventDefault();
-    const api_url = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Kiev&appid=${API_KEY}&units=metric`);
+    const city = e.target.elements.city.value;
+    const api_url = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`);
     const data = await api_url.json();
     console.log(data);
+
+    this.setState({
+      temp: data.main.temp,
+      city: data.name,
+      country: data.sys.country,
+      sunrise: data.sys.sunrise,
+      sunset: data.sys.sunset,
+      error: ""
+    })
   }
 
   render() {
@@ -19,7 +38,14 @@ class App extends React.Component {
       <div>
         <Info />
         <Form weatherMethod={this.gettingWeather} />
-        <Weather />
+        <Weather 
+          temp={this.state.temp}
+          city={this.state.city}
+          country={this.state.country}
+          sunrise={this.state.sunrise}
+          sunset={this.state.sunset}
+          error={this.state.error}
+        />
       </div>
     );
   }
